@@ -6,4 +6,4 @@ pycache**
 __pycache__**
 .env
 env*
-podcast_data.csv
+podcast_data.csv*
