@@ -4,3 +4,5 @@ chromedriver**
 mypy_cache**
 pycache**
 __pycache__**
+.env
+env*
