@@ -1,0 +1,6 @@
+.venv*
+.mypy_cache*
+chromedriver**
+mypy_cache**
+pycache**
+__pycache__**
