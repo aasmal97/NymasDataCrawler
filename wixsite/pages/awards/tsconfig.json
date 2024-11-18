@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "pages/awards/dist",
+    "declaration": true,
+    "declarationDir": "pages/awards/dist/types",
+    "target": "es6",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "module": "es6",
+    "strict": true,
+    "lib": ["es6", "DOM"]
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["pages/awards/dist/**/*", "node_modules/**/*"]
+}

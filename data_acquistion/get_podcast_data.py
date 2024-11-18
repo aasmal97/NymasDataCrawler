@@ -8,7 +8,20 @@ from selenium.webdriver.remote.webelement import WebElement
 from utils.dict_to_csv import dicts_to_csv
 import os
 import json
+import requests
 
+
+def fetch_and_save_image(url, local_dir='images'):
+    if not os.path.exists(local_dir):
+        os.makedirs(local_dir)
+
+    response = requests.get(url)
+    if response.status_code == 200:
+        image_name = os.path.join(local_dir, url.split('/')[-1])
+        with open(image_name, 'wb') as f:
+            f.write(response.content)
+    else:
+        response.raise_for_status()
 
 def find_table_with_dimensions(driver: webdriver.Chrome, height: int, width: int):
     try:
@@ -71,8 +84,18 @@ def prompt_open_ai(data: list[dict[str, str]]):
 
 def extract_text_data_from_row(row: WebElement):
     table_columns = row.find_elements(By.XPATH, './td')
+    row_img_el = table_columns[0]
     row_info_el = table_columns[1]
     row_speaker_el = table_columns[2]
+    cover_img = row_img_el.find_element(By.TAG_NAME, 'img')
+    podcast_img = row_speaker_el.find_element(By.TAG_NAME, 'img')
+    cover_img_url = cover_img.get_attribute('src')
+    podcast_img_url = podcast_img.get_attribute('src')
+    # domain = 'https://nymas.org'
+    # podcast_img_url = f'{domain}{podcast_img_url}'
+    # cover_img_url = f'{domain}{cover_img_url}'
+    fetch_and_save_image(podcast_img_url)
+    fetch_and_save_image(cover_img_url)
     speaker = row_speaker_el.text
     info = row_info_el.text
     return {
@@ -99,6 +122,6 @@ def acquire_podcast_data(driver: webdriver.Chrome):
         print("No table found with the specified dimensions.")
         return
     data = extract_data_from_rows(table)
-    cleaned_data = prompt_open_ai(data)
+    # cleaned_data = prompt_open_ai(data)
     # create csv file to import into a database collection
-    dicts_to_csv(cleaned_data, 'podcast_data.csv')
+    dicts_to_csv(data, 'podcast_data.csv')
